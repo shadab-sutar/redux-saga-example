@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getMentors } from './redux/actions/mentors';
+import MentorList from './components/MentorList';
 
 function App() {
+  const dispatch = useDispatch();
+  const mentors = useSelector(state => state.mentors.mentors);
+  const loading = useSelector(state => state.mentors.loading);
+  const error = useSelector(state => state.mentors.error);
+
+  useEffect(() => {
+    dispatch(getMentors());
+  }, [dispatch]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+
+
+      {mentors.length > 0 && !loading && mentors.map((mentor) => (
+        <MentorList mentor={mentor} key={mentor.id} />
+      ))}
+
+      {mentors.length === 0 && !loading && <p>No mentors</p>}
+
+      {error && !loading && <p>{error}</p>}
+    </>
   );
 }
 
